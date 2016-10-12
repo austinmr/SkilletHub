@@ -55,6 +55,7 @@ class UserProfile extends React.Component {
       followUser: false,    
       activeKey: 1,
       recipeList: [],
+      recipeCount: 0, 
       notificationsList: [], 
       followingList: [],
       pullRequests: pullRequestsTemplate
@@ -71,35 +72,38 @@ class UserProfile extends React.Component {
     axios.all([this.getUser(usernameParameter), this.getNotifications(usernameParameter), this.getPullRequests(usernameParameter)])
     .then(axios.spread((user, notifications, pullRequests) => {
 
-      // console.log('USER PROFILE RESULTS DATA'); 
-      // console.log(user.data); 
-
-      // console.log('NOTIFICATIONS RESULTS DATA'); 
-      // console.log(notifications.data); 
-
-      // console.log('pullRequests DATA'); 
-      // console.log(pullRequests.data); 
-
-      var pullRequests = pullRequests.data; 
-      var recipes = user.data.recipes; 
+      var recipes = user.data.recipes || []; 
+      var pullRequests = pullRequests.data || {received: []};  
+      
       pullRequests.received.forEach((pullRequest) => {
         var pullRequestMatch = _.findWhere(recipes, {rootRecipeId: pullRequest.targetRootVersion}); 
-        // console.log('PULL REQUEST MATCH: ', pullRequestMatch); 
         pullRequest.originalName = pullRequestMatch.name; 
       }); 
 
-      console.log('PULL REQUESTS MODIFIED'); 
-      console.log(pullRequests); 
+      var openPullRequests = pullRequests.received.filter((pullRequest) => {
+        if (pullRequest.status === 'open'); 
+      }); 
+
+      // console.log('OPEN PULL REQUESTS'); 
+      // console.log(openPullRequests); 
+
+      // console.log('RECIPES')
+      // console.log(recipes); 
+
+      var recipeCount = recipes.length || 0; 
+      // console.log('RECIPE COUNT: ', recipeCount); 
 
       this.setState({
         username: usernameParameter, 
         userID: this.props.userID,
         userProfile: user.data,
         image: userImage, 
-        recipeList: user.data.recipes,
+        recipeList: recipes,
+        recipeCount: recipeCount, 
         notificationsList: notifications.data, 
         // followingList: following.data, 
         pullRequests: pullRequests,
+        openPullRequests: openPullRequests.length, 
         followers: user.data.followers
       }); 
 
@@ -176,7 +180,7 @@ class UserProfile extends React.Component {
           <NavItem eventKey={1} title="Recipes">Recipes</NavItem>
           <NavItem eventKey={2} title="Notifications">Notifications</NavItem>
           <NavItem eventKey={3} title="Following">Following</NavItem>
-          <NavItem eventKey={4} title="PullRequests">Pull Requests <Badge bsStyle="success">{this.state.pullRequests.received.length}</Badge></NavItem>
+          <NavItem eventKey={4} title="PullRequests">Pull Requests <Badge bsStyle="success">{this.state.openPullRequests}</Badge></NavItem>
         </Nav>
       )
     } else {
@@ -206,7 +210,7 @@ class UserProfile extends React.Component {
               key={i + '' +recipe.rootRecipeId} 
               recipe={recipe} 
               username={this.state.username}
-              branches={recipe.branches.length || 0}
+              branches={recipe.branches || []}
               buttonText={buttonText}
               handleForkedFromUserClick={this.props.handleUserClick} 
               handleRecipeViewClick={this.props.handleRecipeViewClick}
@@ -275,7 +279,7 @@ class UserProfile extends React.Component {
             <UserStats 
               loggedInUserProfile={this.props.loggedInUserProfile} 
               followUser={this.state.followUser}
-              recipeCount={this.state.recipeList.length} 
+              recipeCount={this.state.recipeCount} 
               followers={this.state.followers} 
               handleFollowUserClick={this.props.handleFollowUserClick}
             />
