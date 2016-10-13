@@ -58,7 +58,8 @@ class UserProfile extends React.Component {
       recipeCount: 0, 
       notificationsList: [], 
       followingListProfile: [],
-      pullRequests: pullRequestsTemplate
+      pullRequests: pullRequestsTemplate,
+      openPullRequests: 0
     }; 
   }
 
@@ -81,8 +82,13 @@ class UserProfile extends React.Component {
       }); 
 
       var openPullRequests = pullRequests.received.filter((pullRequest) => {
-        if (pullRequest.status === 'open'); 
+        if (pullRequest.status === 'open') {
+          return pullRequest; 
+        }
       }); 
+
+      console.log('PULL REQUESTS'); 
+      console.log(pullRequests); 
 
       console.log('OPEN PULL REQUESTS'); 
       console.log(openPullRequests); 
@@ -113,12 +119,11 @@ class UserProfile extends React.Component {
         followers: user.data.followers
       }); 
 
-      console.log(this.props.loggedInUserProfile );
-      console.log(this.props.followingListMaster);
-      console.log(following.data); 
-      console.log(typeof this.props.handleSetFollowingListMaster); 
+      console.log('LOGGED IN USER PROFILE: ', this.props.loggedInUserProfile );
 
-      this.props.handleSetFollowingListMaster(following.data); 
+      if (this.props.loggedInUserProfile) {
+        this.props.handleSetFollowingListMaster(following.data); 
+      }
 
     }))
     .catch((error) => {
@@ -126,39 +131,82 @@ class UserProfile extends React.Component {
     }); 
   }
 
-  // componentDidMount() {
-  //   console.log('COMPONENT MOUNTED!'); 
-  //   var followingListProfile = this.state.followingListProfile; 
-  //   console.log(followingListProfile); 
-  //   if (this.props.loggedInUserProfile && this.props.followingListMaster === []) {
-  //     this.props.handleSetFollowingListMaster(followingListProfile); 
-  //   }
-  // }
-
-   componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
+    console.log('USER PROFILE COMPONENT RECEIVING PROPS!'); 
     var usernameParameter = nextProps.params.username; 
     var userImage = placeholders.images[usernameParameter] || 'https://cdn4.iconfinder.com/data/icons/kitchenware-2/100/04-512.png';  
-    // var otherUser = this.props.username !== username; 
-    // console.log('OTHER USER: ', otherUser); 
 
-    axios.get(`/${usernameParameter}/profile`)
-    .then((results) => {
-      console.log('SUCCESSFULLY REQUESTED PROFILE'); 
-      console.log(results.data.recipes); 
+    axios.all([this.getUser(usernameParameter), this.getNotifications(usernameParameter), this.getFollowing(usernameParameter), this.getPullRequests(usernameParameter)])
+    .then(axios.spread((user, notifications, following, pullRequests) => {
+
+      var recipes = user.data.recipes || []; 
+      var recipeCount = recipes.length || 0; 
+      
+      var pullRequests = pullRequests.data || {received: []};  
+      pullRequests.received.forEach((pullRequest) => {
+        var pullRequestMatch = _.findWhere(recipes, {rootRecipeId: pullRequest.targetRootVersion}); 
+        pullRequest.originalName = pullRequestMatch.name; 
+      }); 
+      var openPullRequests = pullRequests.received.filter((pullRequest) => {
+        if (pullRequest.status === 'open') {
+          return pullRequest; 
+        }
+      }); 
+
       this.setState({
         username: usernameParameter, 
         userID: this.props.userID,
-        userProfile: results.data,
+        userProfile: user.data,
         image: userImage, 
-        recipeList: results.data.recipes,
+        recipeList: recipes,
+        recipeCount: recipeCount, 
         loggedInUserProfile: this.props.loggedInUserProfile,
-        activeKey: 1
+        activeKey: 1,
+        notificationsList: notifications.data, 
+        followingListProfile: following.data, 
+        pullRequests: pullRequests,
+        openPullRequests: openPullRequests.length, 
+        followers: user.data.followers
       }); 
-    })
+
+      console.log('CHECKING TO UPDATE FOLLOWING LIST'); 
+      var followingCount = following.data.length; 
+      console.log(followingCount); 
+      console.log(this.props.followingListMaster); 
+      if (this.props.loggedInUserProfile && this.props.followingListMaster.length < followingCount) {
+        this.props.handleSetFollowingListMaster(following.data); 
+      }
+
+    }))
     .catch((error) => {
       console.log(error); 
     }); 
   }
+
+  //  componentWillReceiveProps(nextProps) {
+  //   var usernameParameter = nextProps.params.username; 
+  //   var userImage = placeholders.images[usernameParameter] || 'https://cdn4.iconfinder.com/data/icons/kitchenware-2/100/04-512.png';  
+  //   // var otherUser = this.props.username !== username; 
+  //   // console.log('OTHER USER: ', otherUser); 
+
+  //   axios.get(`/${usernameParameter}/profile`)
+  //   .then((results) => {
+  //     console.log('SUCCESSFULLY REQUESTED PROFILE'); 
+  //     console.log(results.data.recipes); 
+  //     this.setState({
+  //       username: usernameParameter, 
+  //       userID: this.props.userID,
+  //       userProfile: results.data,
+  //       image: userImage, 
+  //       recipeList: results.data.recipes,
+  //       loggedInUserProfile: this.props.loggedInUserProfile,
+  //       activeKey: 1
+  //     }); 
+  //   })
+  //   .catch((error) => {
+  //     console.log(error); 
+  //   }); 
+  // }
 
   getUser(usernameParameter) {
     return axios.get(`/${usernameParameter}/profile`); 
@@ -202,7 +250,7 @@ class UserProfile extends React.Component {
           <NavItem eventKey={1} title="Recipes">Recipes</NavItem>
           <NavItem eventKey={2} title="Notifications">Notifications</NavItem>
           <NavItem eventKey={3} title="Following">Following</NavItem>
-          <NavItem eventKey={4} title="PullRequests">Pull Requests <Badge bsStyle="success">{this.state.openPullRequests}</Badge></NavItem>
+          <NavItem eventKey={4} title="PullRequests">Pull Requests <Badge>{this.state.openPullRequests}</Badge></NavItem>
         </Nav>
       )
     } else {
