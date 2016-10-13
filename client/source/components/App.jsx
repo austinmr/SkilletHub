@@ -21,7 +21,8 @@ class App extends React.Component {
       currentProfile: null,
       loggedInUserProfile: true,
       pullRequestObject: {},
-      issueObject: {} 
+      issueObject: {},
+      followingListMaster: [] 
   	}; 
   }
 
@@ -355,6 +356,7 @@ class App extends React.Component {
 	  return React.cloneElement(child, {
       userID: this.state.userID,
       username: this.state.username, 
+      followingListMaster: this.state.followingListMaster, 
       loggedInUserProfile: this.state.loggedInUserProfile, 
       handleSignUp: this.handleSignUp.bind(this),
       
@@ -378,7 +380,8 @@ class App extends React.Component {
       handleViewIssuesClick: this.handleViewIssuesClick.bind(this),
       handleViewSingleIssueClick: this.handleViewSingleIssueClick.bind(this),
       handleIssueResponseSubmit: this.handleIssueResponseSubmit.bind(this),
-      handleFollowUserClick: this.handleFollowUserClick.bind(this)
+      handleFollowUserClick: this.handleFollowUserClick.bind(this),
+      handleSetFollowingListMaster: this.handleSetFollowingListMaster.bind(this)
 	  })
 	}.bind(this))
     return (
