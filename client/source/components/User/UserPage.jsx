@@ -90,6 +90,9 @@ class UserProfile extends React.Component {
       // console.log('RECIPES')
       // console.log(recipes); 
 
+      console.log('Notifications'); 
+      console.log(notifications.data); 
+
       var recipeCount = recipes.length || 0; 
       // console.log('RECIPE COUNT: ', recipeCount); 
 
