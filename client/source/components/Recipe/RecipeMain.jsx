@@ -227,14 +227,25 @@ class RecipeMain extends Component {
 
     if (buttonType === 'issue') {
       var recipeObject = {};
-      recipeObject.usernameParameter = this.state.recipe.forkedFrom; 
-      recipeObject.recipeParameter = this.state.recipe.rootVersion;  
+      if (this.state.ownRecipe) {
+        recipeObject.usernameParameter = this.props.params.username; 
+        recipeObject.recipeParameter = this.props.params.recipe;  
+      } else {
+        recipeObject.usernameParameter = this.state.recipe.forkedFrom; 
+        recipeObject.recipeParameter = this.state.recipe.rootVersion;  
+      }
       this.props.handleNewIssueClick(recipeObject); 
     }
 
     if (buttonType === 'issuesList') {
       var usernameParameter = this.props.params.username; 
       var recipeParameter = this.props.params.recipe; 
+      this.props.handleViewIssuesClick(usernameParameter, recipeParameter); 
+    }
+
+    if (buttonType === 'viewIssues') {
+      var usernameParameter = this.state.recipe.forkedFrom; 
+      var recipeParameter = this.state.recipe.rootVersion; 
       this.props.handleViewIssuesClick(usernameParameter, recipeParameter); 
     }
   }
