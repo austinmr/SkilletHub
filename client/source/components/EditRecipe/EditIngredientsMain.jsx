@@ -20,7 +20,7 @@ class EditIngredientsMain extends React.Component {
 			<Grid>
 				<Row> 
 					{headers.map((header) => (
-						<Col xs={header[1]} md={header[1]} style={{margin: 5}}>
+						<Col xs={header[1]} md={header[1]} style={{marginTop: 5}}>
 							<h4> {header[0]} </h4> 
 						</Col> 
 					))}

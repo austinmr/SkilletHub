@@ -457,7 +457,7 @@ class EditRecipeMain extends Component {
         <Col xs={2} md={2}> 
             <form>
               <FormGroup style={{padding: 5}}>
-              <ControlLabel> Recipe Servings Min </ControlLabel>
+              <ControlLabel> Servings Min </ControlLabel>
               <FormControl type="number" id="servingsMin" onChange={this.handleChange.bind(this)} value={this.state.servingsMin} />
               </FormGroup>
             </form>
@@ -465,7 +465,7 @@ class EditRecipeMain extends Component {
         <Col xs={2} md={2}> 
             <form>
               <FormGroup style={{padding: 5}}>
-              <ControlLabel> Recipe Servings Max </ControlLabel>
+              <ControlLabel> Servings Max </ControlLabel>
               <FormControl type="number" id="servingsMax" onChange={this.handleChange.bind(this)} value={this.state.servingsMax} />
               </FormGroup>
             </form>

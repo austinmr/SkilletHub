@@ -106,9 +106,6 @@ class AddStep extends React.Component {
           </Button>
         </Col>
       </Row>
-      <Row>
-        <h4> {JSON.stringify(this.props.availableIngredients)} </h4>
-      </Row>
       </Grid>
     )
   }
