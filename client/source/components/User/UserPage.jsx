@@ -57,7 +57,7 @@ class UserProfile extends React.Component {
       recipeList: [],
       recipeCount: 0, 
       notificationsList: [], 
-      followingList: [],
+      followingListProfile: [],
       pullRequests: pullRequestsTemplate
     }; 
   }
@@ -69,8 +69,8 @@ class UserProfile extends React.Component {
     // TODO: Remove this to user a user's actual picture. 
     var userImage = placeholders.images[usernameParameter] || 'https://cdn4.iconfinder.com/data/icons/kitchenware-2/100/04-512.png';  
 
-    axios.all([this.getUser(usernameParameter), this.getNotifications(usernameParameter), this.getPullRequests(usernameParameter)])
-    .then(axios.spread((user, notifications, pullRequests) => {
+    axios.all([this.getUser(usernameParameter), this.getNotifications(usernameParameter), this.getFollowing(usernameParameter), this.getPullRequests(usernameParameter)])
+    .then(axios.spread((user, notifications, following, pullRequests) => {
 
       var recipes = user.data.recipes || []; 
       var pullRequests = pullRequests.data || {received: []};  
@@ -84,14 +84,17 @@ class UserProfile extends React.Component {
         if (pullRequest.status === 'open'); 
       }); 
 
-      // console.log('OPEN PULL REQUESTS'); 
-      // console.log(openPullRequests); 
+      console.log('OPEN PULL REQUESTS'); 
+      console.log(openPullRequests); 
 
       // console.log('RECIPES')
       // console.log(recipes); 
 
       console.log('Notifications'); 
       console.log(notifications.data); 
+
+      console.log('Following'); 
+      console.log(following.data); 
 
       var recipeCount = recipes.length || 0; 
       // console.log('RECIPE COUNT: ', recipeCount); 
@@ -104,17 +107,33 @@ class UserProfile extends React.Component {
         recipeList: recipes,
         recipeCount: recipeCount, 
         notificationsList: notifications.data, 
-        // followingList: following.data, 
+        followingListProfile: following.data, 
         pullRequests: pullRequests,
         openPullRequests: openPullRequests.length, 
         followers: user.data.followers
       }); 
+
+      console.log(this.props.loggedInUserProfile );
+      console.log(this.props.followingListMaster);
+      console.log(following.data); 
+      console.log(typeof this.props.handleSetFollowingListMaster); 
+
+      this.props.handleSetFollowingListMaster(following.data); 
 
     }))
     .catch((error) => {
       console.log(error); 
     }); 
   }
+
+  // componentDidMount() {
+  //   console.log('COMPONENT MOUNTED!'); 
+  //   var followingListProfile = this.state.followingListProfile; 
+  //   console.log(followingListProfile); 
+  //   if (this.props.loggedInUserProfile && this.props.followingListMaster === []) {
+  //     this.props.handleSetFollowingListMaster(followingListProfile); 
+  //   }
+  // }
 
    componentWillReceiveProps(nextProps) {
     var usernameParameter = nextProps.params.username; 
@@ -226,18 +245,19 @@ class UserProfile extends React.Component {
           this.state.notificationsList.map((notification, i) => (
              <NotificationsListEntry
               key={'notification' + i} 
-              user={notification.text.split(' ')[0]} 
+              user={notification.username} 
               text={notification.text.split(' ').slice(1).join(' ')} 
               handleUserClick={this.props.handleUserClick}
             />
           ))
         )
-      } else if (this.state.activeKey === 3 && this.state.followingList !== undefined) {
+      } else if (this.state.activeKey === 3 && this.state.followingListProfile !== undefined) {
         return (
-          this.state.followingList.map((user, i) => (
+          this.state.followingListProfile.map((user, i) => (
              <FollowingListEntry 
               key={'following' + i} 
               user={user} 
+              skillLevel={Math.floor(Math.random() * 100)}
               handleUserClick={this.props.handleUserClick}
             />
           ))
@@ -285,6 +305,8 @@ class UserProfile extends React.Component {
               recipeCount={this.state.recipeCount} 
               followers={this.state.followers} 
               handleFollowUserClick={this.props.handleFollowUserClick}
+              followingListMaster={this.props.followingListMaster}
+              profileUsername={this.props.params.username}
             />
             {this._renderNavigationBar()}
             {this._renderActiveComponent()}
