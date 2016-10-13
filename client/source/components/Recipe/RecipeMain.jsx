@@ -53,11 +53,11 @@ class RecipeMain extends Component {
       console.log('RECIPE: ', recipe); 
       // console.log('DESCRIPTION:', recipe.description.value); 
       if (this.props.username === recipe.forkedFrom || recipe.forkedFrom === undefined) {
-        console.log('OWN RECIPE: ', ownRecipe); 
         var ownRecipe = true; 
       } else {
         ownRecipe = false; 
       }
+      console.log('OWN RECIPE: ', ownRecipe); 
 
       this.setState({
         recipe: recipe,
