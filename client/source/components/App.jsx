@@ -283,12 +283,13 @@ class App extends React.Component {
   }
 
   handleIssueResponseSubmit(issueResponseObject) {
-    var usernameParameter = this.props.params.username; 
+    var commentUsernameParameter = this.state.username; 
     var recipeParameter = this.props.params.recipe; 
+    var recipeUsernameParameter = this.props.params.username; 
     var issueParameter = this.state.issueObject._id; 
 
     if (issueResponseObject.type === 'comment') {
-      axios.post(`/${usernameParameter}/${issueParameter}/create-comment`, {
+      axios.post(`/${commentUsernameParameter}/${issueParameter}/create-comment`, {
         data: issueResponseObject.data
       })
       .then((result) => {
@@ -297,13 +298,13 @@ class App extends React.Component {
         this.setState({
           issueObject: {}
         }); 
-        browserHistory.push(`/Issues/List/${usernameParameter}/${recipeParameter}`); 
+        browserHistory.push(`/Issues/List/${recipeUsernameParameter}/${recipeParameter}`); 
       })
       .catch((error) => {
         console.log(error); 
       }); 
     } else {
-      axios.put(`/${usernameParameter}/${recipeParameter}/update-status`, {
+      axios.put(`/${recipeUsernameParameter}/${recipeParameter}/update-status`, {
         status: issueResponseObject.type
       })
       .then((result) => {
@@ -312,7 +313,7 @@ class App extends React.Component {
         this.setState({
           issueObject: {}
         }); 
-        browserHistory.push(`/Issues/List/${usernameParameter}/${recipeParameter}`); 
+        browserHistory.push(`/Issues/List/${recipeUsernameParameter}/${recipeParameter}`); 
       })
       .catch((error) => {
         console.log(error); 
