@@ -119,14 +119,14 @@ class EditIngredientEntry extends React.Component {
 				    <FormControl type="number" disabled={this.state.disabled} value={this.state.amount} onChange={this.handleChange.bind(this)} />
 				  </FormGroup>
 				</Col>
-				<Col xs={1} md={1}>
-		          <FormGroup controlId="unit">
-		            <FormControl componentClass="select" onChange={this.handleChange.bind(this)} disabled={this.state.disabled}>
-		              {this.state.unitsMenu.map((unit, i)=> (
-		              	<option key={'unit' + i} value={unit}>{unit}</option>
-		              ))}
-		            </FormControl>
-		          </FormGroup>
+				<Col xs={2} md={2}>
+          <FormGroup controlId="unit">
+            <FormControl componentClass="select" style={{width: '100%'}}  onChange={this.handleChange.bind(this)} disabled={this.state.disabled}>
+              {this.state.unitsMenu.map((unit, i)=> (
+              	<option key={'unit' + i} value={unit}>{unit}</option>
+              ))}
+            </FormControl>
+          </FormGroup>
 				</Col>
 				<Col xs={2} md={2}>
 				  <FormGroup controlId="prep">

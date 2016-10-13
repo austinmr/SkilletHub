@@ -74,14 +74,14 @@ class AddIngredientEntry extends React.Component {
 				    <FormControl type="number" value={this.state.amount} onChange={this.handleChange.bind(this)} required={'true'} />
 				  </FormGroup>
 				</Col>
-				<Col xs={1} md={1}>
-		          <FormGroup controlId="unit" validationState={this.state.validationState}>
-		            <FormControl componentClass="select" onChange={this.handleChange.bind(this)} required={true}>
-		              {this.state.unitsMenu.map((unit, i)=> (
-		              	<option key={'unit' + i} value={unit}>{unit}</option>
-		              ))}
-		            </FormControl>
-		          </FormGroup>
+				<Col xs={2} md={2}>
+          <FormGroup controlId="unit" validationState={this.state.validationState}>
+            <FormControl componentClass="select" style={{width: '100%'}} onChange={this.handleChange.bind(this)} required={true}>
+              {this.state.unitsMenu.map((unit, i)=> (
+              	<option key={'unit' + i} value={unit}>{unit}</option>
+              ))}
+            </FormControl>
+          </FormGroup>
 				</Col>
 				<Col xs={2} md={2}>
 				  <FormGroup controlId="prep">
@@ -94,7 +94,7 @@ class AddIngredientEntry extends React.Component {
 				  </FormGroup>
 				</Col> 
 				<Col xs={2} md={2}> 
-				  <Button type="submit" style={{marginTop: 15}} onClick={this.handleClick.bind(this)} onSubmit={this.handleClick.bind(this)} >
+				  <Button type="submit" onClick={this.handleClick.bind(this)} onSubmit={this.handleClick.bind(this)} >
 				    Add
 				  </Button>
 				</Col> 

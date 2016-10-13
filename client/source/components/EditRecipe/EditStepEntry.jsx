@@ -169,9 +169,9 @@ class EditStepEntry extends React.Component {
         <Row> 
         <Col xs={10} md={10} xsOffset={1} mdOffset={1}>
         <Panel> 
-          <Row> 
+          <Row > 
             <Col xs={12} md={12}>
-              <FormGroup validationState={this.state.validation}>
+              <FormGroup validationState={this.state.validation} style={{marginBottom: 0}}>
                 <ControlLabel> Step Description </ControlLabel>
                 <FormControl componentClass="textarea" type="text" style={{height: this.state.lines}} id="description" value={this.state.description} onChange={this.handleChange.bind(this)} disabled={this.state.disabled}/>
               </FormGroup>
@@ -185,15 +185,21 @@ class EditStepEntry extends React.Component {
               {this._renderTime()}
           </Row> 
           <Row> 
-            <Button type="submit" style={{padding: 10}} onClick={this.handleClick.bind(this)}>
+            <Col xs={4} md={4}> 
+            <Button type="submit" style={{width: "100%"}} onClick={this.handleClick.bind(this)}>
               Edit
             </Button>
-            <Button type="submit" style={{padding: 10}} onClick={this.handleEdit.bind(this)} disabled={this.state.disabled}>
+            </Col> 
+            <Col xs={4} md={4}> 
+            <Button type="submit" bsStyle="success" style={{width: "100%"}} onClick={this.handleEdit.bind(this)} disabled={this.state.disabled}>
               Commit Edit
             </Button>
-            <Button type="submit" style={{padding: 10}} onClick={this.handleDelete.bind(this)} disabled={this.state.disabled}>
+            </Col>
+            <Col xs={4} md={4}> 
+            <Button type="submit" bsStyle="danger" style={{width: "100%"}} onClick={this.handleDelete.bind(this)} disabled={this.state.disabled}>
               Delete
             </Button>
+            </Col>
           </Row>
         </Panel> 
         </Col>
