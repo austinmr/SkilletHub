@@ -147,7 +147,7 @@ class IssuesManage extends Component {
           </Col> 
         </Row> 
         <Row> 
-          <h2> {'this.state.issueObject.title'} </h2>
+          <h2> {this.state.issueObject.title} </h2>
           <h4> Issue #{this.state.issueObject._id.slice(0,6)} </h4>
           <Label>{this.state.issueObject.status}</Label>
         </Row> 
