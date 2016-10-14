@@ -55,8 +55,8 @@ class CreateRecipeMain extends Component {
     if (inputType === 'skill'){
       this.setState({skillLevel: event.target.value}); 
     } 
-    if (inputType === 'image'){
-      this.setState({image: event.target.value}); 
+    if (inputType === 'picture'){
+      this.setState({picture: event.target.value}); 
     } 
     if (inputType === 'tags'){
       var tags = this.state.tags;
