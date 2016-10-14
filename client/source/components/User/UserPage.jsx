@@ -64,10 +64,7 @@ class UserProfile extends React.Component {
   }
 
   componentWillMount() {
-    console.log('PARAMS USER PAGE: ', this.props.params); 
     var usernameParameter = this.props.params.username; 
-
-    // TODO: Remove this to user a user's actual picture. 
     var userImage = placeholders.images[usernameParameter] || 'https://cdn4.iconfinder.com/data/icons/kitchenware-2/100/04-512.png';  
 
     axios.all([this.getUser(usernameParameter), this.getNotifications(usernameParameter), this.getFollowing(usernameParameter), this.getPullRequests(usernameParameter)])
@@ -87,23 +84,7 @@ class UserProfile extends React.Component {
         }
       }); 
 
-      console.log('PULL REQUESTS'); 
-      console.log(pullRequests); 
-
-      console.log('OPEN PULL REQUESTS'); 
-      console.log(openPullRequests); 
-
-      // console.log('RECIPES')
-      // console.log(recipes); 
-
-      console.log('Notifications'); 
-      console.log(notifications.data); 
-
-      console.log('Following'); 
-      console.log(following.data); 
-
       var recipeCount = recipes.length || 0; 
-      // console.log('RECIPE COUNT: ', recipeCount); 
 
       this.setState({
         username: usernameParameter, 
@@ -112,7 +93,7 @@ class UserProfile extends React.Component {
         image: userImage, 
         recipeList: recipes,
         recipeCount: recipeCount, 
-        notificationsList: notifications.data, 
+        notificationsList: notifications, 
         followingListProfile: following.data, 
         pullRequests: pullRequests,
         openPullRequests: openPullRequests.length, 
@@ -153,6 +134,8 @@ class UserProfile extends React.Component {
         }
       }); 
 
+      var notifications = notifications.data.reverse(); 
+
       this.setState({
         username: usernameParameter, 
         userID: this.props.userID,
@@ -162,17 +145,14 @@ class UserProfile extends React.Component {
         recipeCount: recipeCount, 
         loggedInUserProfile: this.props.loggedInUserProfile,
         activeKey: 1,
-        notificationsList: notifications.data, 
+        notificationsList: notifications, 
         followingListProfile: following.data, 
         pullRequests: pullRequests,
         openPullRequests: openPullRequests.length, 
         followers: user.data.followers
       }); 
 
-      console.log('CHECKING TO UPDATE FOLLOWING LIST'); 
       var followingCount = following.data.length; 
-      console.log(followingCount); 
-      console.log(this.props.followingListMaster); 
       if (this.props.loggedInUserProfile && this.props.followingListMaster.length < followingCount) {
         this.props.handleSetFollowingListMaster(following.data); 
       }
@@ -182,31 +162,6 @@ class UserProfile extends React.Component {
       console.log(error); 
     }); 
   }
-
-  //  componentWillReceiveProps(nextProps) {
-  //   var usernameParameter = nextProps.params.username; 
-  //   var userImage = placeholders.images[usernameParameter] || 'https://cdn4.iconfinder.com/data/icons/kitchenware-2/100/04-512.png';  
-  //   // var otherUser = this.props.username !== username; 
-  //   // console.log('OTHER USER: ', otherUser); 
-
-  //   axios.get(`/${usernameParameter}/profile`)
-  //   .then((results) => {
-  //     console.log('SUCCESSFULLY REQUESTED PROFILE'); 
-  //     console.log(results.data.recipes); 
-  //     this.setState({
-  //       username: usernameParameter, 
-  //       userID: this.props.userID,
-  //       userProfile: results.data,
-  //       image: userImage, 
-  //       recipeList: results.data.recipes,
-  //       loggedInUserProfile: this.props.loggedInUserProfile,
-  //       activeKey: 1
-  //     }); 
-  //   })
-  //   .catch((error) => {
-  //     console.log(error); 
-  //   }); 
-  // }
 
   getUser(usernameParameter) {
     return axios.get(`/${usernameParameter}/profile`); 
@@ -295,7 +250,9 @@ class UserProfile extends React.Component {
               key={'notification' + i} 
               user={notification.username} 
               text={notification.text.split(' ').slice(1).join(' ')} 
+              notification={notification}
               handleUserClick={this.props.handleUserClick}
+              handleViewIssuesClick={this.props.handleViewIssuesClick}
             />
           ))
         )
